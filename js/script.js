@@ -92,7 +92,17 @@ fetch(url)
                 buttonContainer.appendChild(button)
             })
 
-            document.getElementById("greeting").innerHTML = "Welcome To Check Mates!";
+            const greetingContainer = document.getElementById("greetingContainer");
+
+            const greeting = document.createElement("h1")
+            greeting.innerHTML = "Welcome To Check Mates!";
+
+            const instructions = document.createElement("h2")
+            instructions.innerHTML = "Select your event below"
+
+            greetingContainer.appendChild(greeting)
+            greetingContainer.appendChild(instructions)
+
             console.log(`${eventsToday.length} Links`)
         }
 
