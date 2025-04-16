@@ -9,10 +9,6 @@ body {
     text-align: center;
 }
 
-/* h1 {
-    font-size: 1em;
-} */
-
 li {
     font-size: .8em;
     text-decoration: none;
@@ -20,4 +16,25 @@ li {
     margin: .5em;
     background-color: blue;
     padding: 1em;
+}
+
+#buttonContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrapD;
+}
+
+button {
+    width: 80%;
+    font-size: 2em;
+    color: white;
+    background-color: darkblue;
+    padding: .75em;
+    margin: .1em;
+    border-radius: 20px;
+    border-width: 0;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
 }
