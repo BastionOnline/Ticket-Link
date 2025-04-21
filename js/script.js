@@ -1,10 +1,13 @@
 // get link to qr, get title of page linked to, if it is Link, continue, if not go to link.html man
-const spreadsheetId = '1fKISONfWtxZZIRK_5VHHabB8yXEKH_ss86TDDuCov-I';
+// if deprecated use: (0) CSVJSON, (1) export google Apps Script, (2) python csv to json, (3) download csv method on client
+// (0) https://csvjson.com/csv2json
+// (3) https://docs.google.com/spreadsheets/d/{spreadsheetId}/export?format=csv&id={spreadsheetId}&gid={sheetGid}
+
+// const spreadsheetId = '1fKISONfWtxZZIRK_5VHHabB8yXEKH_ss86TDDuCov-I';
+const spreadsheetId = '1ZYA5DaiQsGYdKsY45IhDPlhtXns_FuprLuzE673KtuY';
 const sheetName = 'Main Schedule';
 
-
 const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
-
 
 fetch(url)
     .then(response => response.text())
