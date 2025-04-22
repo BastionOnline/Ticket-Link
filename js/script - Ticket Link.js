@@ -1,1 +1,1 @@
-window.location.replace("https://rebrand.ly/e1ccaeu");
+window.location.replace("https://www.rebrand.ly/e1ccaeu");
