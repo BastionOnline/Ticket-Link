@@ -108,6 +108,10 @@ fetch(url)
 
             console.log(`${eventsToday.length} Links`)
             console.log(`${window.location.href} test`)
+
+            const currentLocation = window.location.href
+            const colour = currentLocation.split("?")[1]
+            console.log(colour)
         }
 
         })
