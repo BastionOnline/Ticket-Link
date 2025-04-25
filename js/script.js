@@ -107,6 +107,7 @@ fetch(url)
             greetingContainer.appendChild(instructions)
 
             console.log(`${eventsToday.length} Links`)
+            console.log(`${window.location.href} test`)
         }
 
         })
