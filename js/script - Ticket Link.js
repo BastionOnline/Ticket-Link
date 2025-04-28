@@ -1,3 +1,6 @@
+const currentLocation = window.location.href
+
+
 // window.location.replace("https://rebrand.ly/e1ccaeu");
 
 // index via brandly
