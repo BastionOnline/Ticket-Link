@@ -9,6 +9,8 @@ const sheetName = 'Main Schedule';
 
 const url = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
 
+const homePage = 'pages/thankYou.html'
+
 fetch(url)
     .then(response => response.text())
     .then(rawText => {
@@ -66,7 +68,8 @@ fetch(url)
             if (today >= eventStartParsed && today <= eventStopParsed) {
                 eventsToday.push({
                     name: eventName || link,
-                    link: counter || link || "https://www.mtccc.com/"
+                    link: counter || link || homePage || "https://www.mtccc.com/"
+
                 })
                 console.log(eventsToday)
             } else {
@@ -77,8 +80,8 @@ fetch(url)
         console.log(eventsToday.length)
 
         if (eventsToday.length === 0) {
-            window.location.replace("https://rebrand.ly/e58790");
-            console.log('Home Page')
+            window.location.replace(homePage);
+            console.log(homePage)
         } else if (eventsToday.length === 1){
             window.location.replace(eventsToday[0].link);
             console.log('1 Link')
