@@ -1,0 +1,265 @@
+const SUPABASE_URL = "https://hidtbyhdnandyamqgoib.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpZHRieWhkbmFuZHlhbXFnb2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNTY2OTgsImV4cCI6MjA3MTkzMjY5OH0.vp7NaOZD_Oi78uXDMx9_HzMY1TJaXKKjFwWU-vaT4ko";
+
+// ✅ Create client after library loads
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// get qr from url
+const urlParams = new URLSearchParams(window.location.search);
+const qr = urlParams.get('qr');
+// if qr=null, load all
+
+console.log("QR: " + qr);
+// else go to sponsor.html or thankyou.html
+
+
+async function loadSchedule() {
+    const { data, error } = await supabaseClient
+    .from('main_schedule')
+    .select('*');
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    // console.table(data)
+    return data;
+}
+
+function dayFilter(data){
+    const today = new Date();
+    // console.log(today);
+
+//  // Filter by age
+//     const filteredByAge = jsonData.filter(person => person.age === 30);
+//     console.log(filteredByAge);
+//     // Expected output: [{ "id": 1, "name": "Alice", "age": 30 }, { "id": 3, "name": "Charlie", "age": 30 }]
+
+//     // Filter by name containing "o"
+//     const filteredByName = jsonData.filter(person => person.name.includes("o"));
+//     console.log(filteredByName);
+//     // Expected output: [{ "id": 2, "name": "Bob", "age": 25 }]
+
+    const filteredByToday = data.filter(event => {
+        const eventStart = new Date(event.event_start_dt);
+        const eventStop = new Date(event.event_stop_dt);
+        // console.log(eventStart.toDateString());
+        // console.log(eventStop.toDateString());
+        return (today >= eventStart && today <= eventStop);
+    });
+
+    return filteredByToday;
+}
+
+function presentEvent(data) {
+    console.log(data)
+    console.log(data[0].event_start_dt)
+
+
+    const startDate = new Date(data[0].event_start_dt);
+    const endDate = new Date(data[0].event_stop_dt);
+
+
+    var date = new Date();
+
+    if (date >= startDate && date <= endDate) {
+        console.log("Event is live");
+    } else {
+        console.log("Event is not live");
+    }
+    console.log(`current date: ${date}`);
+    console.log(`Event Start: ${startDate}`);
+    console.log(`Event End: ${endDate}`);
+
+
+
+
+    // // Target date in ISO format
+    // const targetDate = "2025-09-01";
+
+    // // Filter rows where event_date matches targetDate
+    // const results = data.filter(row =>
+    //     row.event_date === targetDate
+    // );
+
+
+}
+
+function qrFilter(data, qr) {
+    // console.log(data);
+
+    var allQrs = ["red", "blue", "green", "yellow", "purple", "orange"];
+    qr = qr.toLowerCase();
+
+
+    // trim qr and make lowercase
+    const cleanData = data.map(event => ({
+        ...event,
+        qr_code: event.qr_code ? event.qr_code.trim().toLowerCase() : ""
+    }));
+    console.log(cleanData);
+
+    // log qr first
+    console.log(qr);
+    // check if qr=all in array
+    // ? after qr_code means to check if it exists first before running includes, otherwise it will error out
+    if (cleanData.some(qrCodes => qrCodes.qr_code?.includes("all")) || qr === null) {
+
+        console.log("All QR found");
+        var filterAll = [...cleanData];
+        filterAll = cleanData.filter(qrCodes => qrCodes.qr_code.includes("all"));
+        console.log(filterAll);
+        return filterAll;
+    
+    } else if (qr && cleanData.some(qrCodes => qrCodes.qr_code.includes(qr))) {
+
+        console.log("Specific QR found");
+        var filterUser = [...cleanData];
+        filterUser = filterUser.filter(qrCodes => qrCodes.qr_code.includes(qr));
+        console.log(filterUser);
+        return filterUser;
+
+    } else if (cleanData.some(qrCodes => qrCodes.qr_code.includes("other"))) {
+
+        console.log("Other QR found");
+        var filterOther = [...cleanData];
+        filterOther = cleanData.filter(qrCodes => qrCodes.qr_code.includes("other"));
+        console.log(filterOther);
+        return filterOther;
+
+    } else {
+        
+        console.log("No match found");
+        console.log(cleanData);
+        return cleanData;
+
+    }
+    // check qr against array first
+
+
+    // check if qr=other in array
+
+
+
+    // if 1 match, forward to link
+    // if multiple, return array as buttons
+    // if 0, go to thank you page
+
+
+    // if (qr != null) {
+    //     const filteredByQR = data.filter(event => event.qr_code === qr);
+    //     console.log(filteredByQR);
+    //     return filteredByQR;
+    // } else {
+    //     return data;
+    // }
+}
+
+function forwarding(data) {
+    // link thank you directly
+
+    console.log("Forwarding function called");
+    console.log(data[0].link);
+
+    const thankYou = './pages/thankYou.html'
+
+    
+    const lowerCaseLinkArray = data.map(event => ({
+        ...event,
+        link: event.link ? event.link.trim().toLowerCase() : ""
+    }));
+    console.log(lowerCaseLinkArray);
+
+    // if 0 match, go to thank you page
+    if (data.length === 0) {
+        window.location.replace(thankYou);
+    
+    // if thank you in link, go to thank you page with params
+    } else if (lowerCaseLinkArray.some(qrCodes => qrCodes.link.includes("thank you"))) {
+
+    console.log("Thank you found");
+    const paramsObject = {
+        event_stop: data[0].event_stop_dt,
+        location: data[0].location
+    };
+    const queryString = new URLSearchParams(paramsObject).toString();
+    const redirectUrl = `${thankYou}?${queryString}`;
+    console.log(redirectUrl);
+    window.location.replace(redirectUrl);
+
+
+    // console.log(`${thankYou}?event_stop='${data[0].event_stop_dt}'&location='${data[0].location}'`)
+    // window.location.replace(`${data[0].link}+?event_stop=${event_stop_dt}&location=${location}`);
+
+
+    // filterAll = cleanData.filter(qrCodes => qrCodes.qr_code.includes("all"));
+    // console.log(filterAll);
+    // return filterAll;
+    
+    // if 1 match, forward to link
+    } else if (data.length === 1){
+        window.location.replace(data[0].link);
+        console.log('1 Link')
+    
+    // if multiple, show buttons
+    } else {
+            const buttonContainer = document.getElementById("buttonContainer");
+
+            data.forEach(event => {
+                const button = document.createElement("button")
+
+                button.addEventListener("click", () => {
+                    window.location.href = event.link;
+                });
+                button.textContent = event.event;
+                buttonContainer.appendChild(button)
+            })
+
+            const greetingContainer = document.getElementById("greetingContainer");
+
+            const greeting = document.createElement("h1")
+            greeting.innerHTML = "Welcome To Check Mates!";
+
+            const instructions = document.createElement("h2")
+            instructions.innerHTML = "Select your event below"
+
+            greetingContainer.appendChild(greeting)
+            greetingContainer.appendChild(instructions)
+
+            console.log(`${data.length} Links`)
+
+        }
+}
+
+// can't just send off with 1 day, need to check other qr's first
+function filterDayForwarding(data) {
+    // if length is 1, forward to link else return array
+        if (data.length === 1) {
+            console.log(`1 link found: ${data[0].link}`);
+            // window.location.replace(filteredDay[0].link);
+            return;
+        } else {
+            return filteredDay;
+        }
+        // returns a json array of events today
+}
+
+// pull schedule from supabase
+loadSchedule()
+    // filter schedule to see if any events are today
+    .then(schedule => {
+        const filteredDay = dayFilter(schedule);
+        return filteredDay;
+    })
+    // filter todays schedeule by QR codes
+    .then(filteredDay => {
+        const filteredQR = qrFilter(filteredDay, qr)
+        return filteredQR;
+    })
+    // based on QR code, forward to link or show links as buttons
+    .then(qrReturn => {
+        // need to use the word beside the .then function, because how it passes data
+        const urlLink = forwarding(qrReturn);
+        return urlLink
+    });
