@@ -17,6 +17,7 @@ console.log("QR: " + qr);
     // when making modular, add to html <script type="module" src="./scripts/main.js"></script>
 // make get url a function and export
 // script thank you page to accept params and display
+// add null condition
 
 async function loadSchedule() {
     const { data, error } = await supabaseClient
@@ -95,7 +96,11 @@ function qrFilter(data, qr) {
     // console.log(data);
 
     var allQrs = ["red", "blue", "green", "yellow", "purple", "orange"];
-    qr = qr.toLowerCase();
+
+    if (qr != null) {
+        qr = qr.toLowerCase();
+    }
+    
 
 
     // trim qr and make lowercase
@@ -108,8 +113,11 @@ function qrFilter(data, qr) {
     // log qr first
     console.log(qr);
     // check if qr=all in array
+
+    // return data if qr === null
+
     // ? after qr_code means to check if it exists first before running includes, otherwise it will error out
-    if (cleanData.some(qrCodes => qrCodes.qr_code?.includes("all")) || qr === null) {
+    if (cleanData.some(qrCodes => qrCodes.qr_code.includes("all"))) {
 
         console.log("All QR found");
         var filterAll = [...cleanData];
