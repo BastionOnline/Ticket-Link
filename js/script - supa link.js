@@ -12,6 +12,11 @@ const qr = urlParams.get('qr');
 console.log("QR: " + qr);
 // else go to sponsor.html or thankyou.html
 
+// cut functions not needed
+// create module layout
+    // when making modular, add to html <script type="module" src="./scripts/main.js"></script>
+// make get url a function and export
+// script thank you page to accept params and display
 
 async function loadSchedule() {
     const { data, error } = await supabaseClient
