@@ -184,6 +184,13 @@ function forwarding(data) {
             window.location.replace(redirectUrl);
 
         } else {    // if link exists, go to link
+            
+            // checks to see if link starts with http or https, if not add https:// to front
+            let link = data[0].link;
+            if (link && !/^https?:\/\//i.test(link)) {
+                link = 'https://' + link;
+            }
+
             window.location.replace(data[0].link);
             console.log('1 Link')
         }
