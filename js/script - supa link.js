@@ -12,14 +12,13 @@ const qr = urlParams.get('qr');
 console.log("QR: " + qr);
 // else go to sponsor.html or thankyou.html
 
-// cut functions not needed
 // create module layout
     // when making modular, add to html <script type="module" src="./scripts/main.js"></script>
 // make get url a function and export
-// script thank you page to accept params and display
 // add null condition
 // make qr
 
+// pull schedule from supabase
 async function loadSchedule() {
     const { data, error } = await supabaseClient
     .from('main_schedule')
@@ -34,9 +33,9 @@ async function loadSchedule() {
     return data;
 }
 
+// filter schedule to see if any events are happening today
 function dayFilter(data){
     const today = new Date();
-    // console.log(today);
 
 //  // Filter by age
 //     const filteredByAge = jsonData.filter(person => person.age === 30);
@@ -51,48 +50,13 @@ function dayFilter(data){
     const filteredByToday = data.filter(event => {
         const eventStart = new Date(event.event_start_dt);
         const eventStop = new Date(event.event_stop_dt);
-        // console.log(eventStart.toDateString());
-        // console.log(eventStop.toDateString());
         return (today >= eventStart && today <= eventStop);
     });
 
     return filteredByToday;
 }
 
-function presentEvent(data) {
-    console.log(data)
-    console.log(data[0].event_start_dt)
-
-
-    const startDate = new Date(data[0].event_start_dt);
-    const endDate = new Date(data[0].event_stop_dt);
-
-
-    var date = new Date();
-
-    if (date >= startDate && date <= endDate) {
-        console.log("Event is live");
-    } else {
-        console.log("Event is not live");
-    }
-    console.log(`current date: ${date}`);
-    console.log(`Event Start: ${startDate}`);
-    console.log(`Event End: ${endDate}`);
-
-
-
-
-    // // Target date in ISO format
-    // const targetDate = "2025-09-01";
-
-    // // Filter rows where event_date matches targetDate
-    // const results = data.filter(row =>
-    //     row.event_date === targetDate
-    // );
-
-
-}
-
+// filter todays schedule by qr codes
 function qrFilter(data, qr) {
     // console.log(data);
 
@@ -118,7 +82,7 @@ function qrFilter(data, qr) {
     // return data if qr === null
 
     // ? after qr_code means to check if it exists first before running includes, otherwise it will error out
-    if (cleanData.some(qrCodes => qrCodes.qr_code.includes("all"))) {
+    if (cleanData.some(qrCodes => qrCodes.qr_code.includes("all"))) { // look for "all" in qr_code column
 
         console.log("All QR found");
         var filterAll = [...cleanData];
@@ -126,7 +90,7 @@ function qrFilter(data, qr) {
         console.log(filterAll);
         return filterAll;
     
-    } else if (qr && cleanData.some(qrCodes => qrCodes.qr_code.includes(qr))) {
+    } else if (qr && cleanData.some(qrCodes => qrCodes.qr_code.includes(qr))) { // look for specific qr in qr_code column
 
         console.log("Specific QR found");
         var filterUser = [...cleanData];
@@ -134,7 +98,7 @@ function qrFilter(data, qr) {
         console.log(filterUser);
         return filterUser;
 
-    } else if (cleanData.some(qrCodes => qrCodes.qr_code.includes("other"))) {
+    } else if (cleanData.some(qrCodes => qrCodes.qr_code.includes("other"))) { // look for "other" in qr_code column
 
         console.log("Other QR found");
         var filterOther = [...cleanData];
@@ -142,7 +106,7 @@ function qrFilter(data, qr) {
         console.log(filterOther);
         return filterOther;
 
-    } else {
+    } else {    // no match found, return day array
         
         console.log("No match found");
         console.log(cleanData);
@@ -170,6 +134,7 @@ function qrFilter(data, qr) {
     // }
 }
 
+// based on QR code, forward to link or show links as buttons
 function forwarding(data) {
     // link thank you directly
 
@@ -253,18 +218,6 @@ function forwarding(data) {
     }
 }
 
-// can't just send off with 1 day, need to check other qr's first
-function filterDayForwarding(data) {
-    // if length is 1, forward to link else return array
-        if (data.length === 1) {
-            console.log(`1 link found: ${data[0].link}`);
-            // window.location.replace(filteredDay[0].link);
-            return;
-        } else {
-            return filteredDay;
-        }
-        // returns a json array of events today
-}
 
 // pull schedule from supabase
 loadSchedule()
