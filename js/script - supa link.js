@@ -205,9 +205,23 @@ function forwarding(data) {
     window.location.replace(redirectUrl);
 
     } else if (data.length === 1){     // if 1 match, forward to link
-        window.location.replace(data[0].link);
-        console.log('1 Link')
-    
+        // check if link is null or empty, if so go to thank you page with params
+        if (data[0].link == null || data[0].link.trim() === "") {
+            const paramsObject = {
+                event_stop: data[0].event_stop_dt,
+                location: data[0].location
+            };
+
+            const queryString = new URLSearchParams(paramsObject).toString();
+            const redirectUrl = `${thankYou}?${queryString}`;
+
+            console.log(redirectUrl);
+            window.location.replace(redirectUrl);
+
+        } else {    // if link exists, go to link
+            window.location.replace(data[0].link);
+            console.log('1 Link')
+        }
     } else {    // if multiple, show buttons
         console.log('Multiple Links found')
         const buttonContainer = document.getElementById("buttonContainer");
