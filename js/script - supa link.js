@@ -18,6 +18,7 @@ console.log("QR: " + qr);
 // make get url a function and export
 // script thank you page to accept params and display
 // add null condition
+// make qr
 
 async function loadSchedule() {
     const { data, error } = await supabaseClient
