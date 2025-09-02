@@ -190,9 +190,12 @@ function forwarding(data) {
             if (link && !/^https?:\/\//i.test(link)) {
                 link = 'https://' + link;
             }
-
-            window.location.replace(link);
             console.log('1 Link')
+            console.log(link)
+            console.log(data[0].event)
+            window.location.replace(link);
+
+            
         }
     } else {    // if multiple, show buttons
         console.log('Multiple Links found')
