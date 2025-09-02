@@ -173,7 +173,7 @@ function forwarding(data) {
     // link thank you directly
 
     console.log("Forwarding function called");
-    console.log(data[0].link);
+    console.log(data[0]?.link);
 
     const thankYou = './pages/thankYou.html'
 
@@ -184,65 +184,58 @@ function forwarding(data) {
     }));
     console.log(lowerCaseLinkArray);
 
-    // if 0 match, go to thank you page
-    if (data.length === 0) {
+    // forwarding conditions
+    if (data.length === 0) { // if the QR filter sent nothing, go to thank you page
         window.location.replace(thankYou);
     
     // if thank you in link, go to thank you page with params
-    } else if (lowerCaseLinkArray.some(qrCodes => qrCodes.link.includes("thank you"))) {
-
+    } else if (lowerCaseLinkArray.some(qrCodes => qrCodes.link.includes("thank you"))) { // if the QR filter found thank you, go to thank you page
     console.log("Thank you found");
+
     const paramsObject = {
         event_stop: data[0].event_stop_dt,
         location: data[0].location
     };
+
     const queryString = new URLSearchParams(paramsObject).toString();
     const redirectUrl = `${thankYou}?${queryString}`;
+
     console.log(redirectUrl);
     window.location.replace(redirectUrl);
 
-
-    // console.log(`${thankYou}?event_stop='${data[0].event_stop_dt}'&location='${data[0].location}'`)
-    // window.location.replace(`${data[0].link}+?event_stop=${event_stop_dt}&location=${location}`);
-
-
-    // filterAll = cleanData.filter(qrCodes => qrCodes.qr_code.includes("all"));
-    // console.log(filterAll);
-    // return filterAll;
-    
-    // if 1 match, forward to link
-    } else if (data.length === 1){
+    } else if (data.length === 1){     // if 1 match, forward to link
         window.location.replace(data[0].link);
         console.log('1 Link')
     
-    // if multiple, show buttons
-    } else {
-            const buttonContainer = document.getElementById("buttonContainer");
+    } else {    // if multiple, show buttons
+        console.log('Multiple Links found')
+        const buttonContainer = document.getElementById("buttonContainer");
 
-            data.forEach(event => {
-                const button = document.createElement("button")
+        // create button for each event
+        data.forEach(event => {
+            const button = document.createElement("button")
 
-                button.addEventListener("click", () => {
-                    window.location.href = event.link;
-                });
-                button.textContent = event.event;
-                buttonContainer.appendChild(button)
-            })
+            button.addEventListener("click", () => {
+                window.location.href = event.link;
+            });
+            button.textContent = event.event;
+            buttonContainer.appendChild(button)
+        })
 
-            const greetingContainer = document.getElementById("greetingContainer");
+        const greetingContainer = document.getElementById("greetingContainer");
 
-            const greeting = document.createElement("h1")
-            greeting.innerHTML = "Welcome To Check Mates!";
+        const greeting = document.createElement("h1")
+        greeting.innerHTML = "Welcome To Check Mates!";
 
-            const instructions = document.createElement("h2")
-            instructions.innerHTML = "Select your event below"
+        const instructions = document.createElement("h2")
+        instructions.innerHTML = "Select your event below"
 
-            greetingContainer.appendChild(greeting)
-            greetingContainer.appendChild(instructions)
+        greetingContainer.appendChild(greeting)
+        greetingContainer.appendChild(instructions)
 
-            console.log(`${data.length} Links`)
+        console.log(`${data.length} Links`)
 
-        }
+    }
 }
 
 // can't just send off with 1 day, need to check other qr's first
