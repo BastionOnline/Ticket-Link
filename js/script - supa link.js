@@ -191,7 +191,7 @@ function forwarding(data) {
                 link = 'https://' + link;
             }
 
-            window.location.replace(data[0].link);
+            window.location.replace(link);
             console.log('1 Link')
         }
     } else {    // if multiple, show buttons
