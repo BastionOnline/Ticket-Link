@@ -1,48 +1,53 @@
 // get qr from url
 const urlParams = new URLSearchParams(window.location.search);
 const qr = urlParams.get('qr');
-// var qr = "blue"; // for testing only, remove later
+// var qr = "red"; // for testing only, remove later
 console.log("QR: " + qr);
 
 const count = urlParams.get('count');
 console.log("Count: " + count);
 
-const qrLinks = {
-    blue: "https://rebrand.ly/6e7eaa",
-    orange: "https://rebrand.ly/fba5d2",
-    green: "https://rebrand.ly/7f445a",
-    purple: "https://rebrand.ly/cbfacc",
-    yellow: "https://rebrand.ly/83eb95",
-    red: "https://rebrand.ly/7d9b7e"
-};
-
-// if qr=null, load all
-if (count === null) {
-    try {
-        const qrLower = qr ? qr.toLowerCase() : "";
-        if (qrLinks[qrLower]) {
-            window.location.replace(qrLinks[qrLower]);
-        } else {
-            console.log("reloading as count=1");
-            window.location.href = "./?count=1";
-        }
-    } catch (error) {
-        console.error("Error in forwarding function: ", error);
-        window.location.href = "./?count=1";
-    }
-    
-} else if (count === "1") {
-    console.log("count=1, loading schedule");
-}
-
-// else go to sponsor.html or thankyou.html
-
-
 const SUPABASE_URL = "https://hidtbyhdnandyamqgoib.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpZHRieWhkbmFuZHlhbXFnb2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNTY2OTgsImV4cCI6MjA3MTkzMjY5OH0.vp7NaOZD_Oi78uXDMx9_HzMY1TJaXKKjFwWU-vaT4ko";
 
-// ✅ Create client after library loads
+// Create client after library loads
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+
+function hitCounter(qr, count) {
+
+    const qrLinks = {
+        blue: "https://rebrand.ly/6e7eaa", // updated
+        orange: "https://rebrand.ly/fba5d2", // updated
+        green: "https://rebrand.ly/9df34c", // UPDATE IN OCTOBER
+        purple: "https://rebrand.ly/a28729", // UPDATE IN OCTOBER
+        yellow: "https://rebrand.ly/83eb95", // updated
+        red: "https://rebrand.ly/7d9b7e" // updated
+    };
+
+    // if qr=null, load all
+    if (count === null) {
+        try {
+            const qrLower = qr ? qr.toLowerCase() : "";
+            if (qrLinks[qrLower]) {
+                window.location.replace(qrLinks[qrLower]);
+            } else {
+                console.log("reloading as count=1");
+                window.location.href = "./?count=1";
+            }
+        } catch (error) {
+            console.error("Error in forwarding function: ", error);
+            window.location.href = "./?count=1";
+        }
+        
+    } else if (count === "1") {
+        console.log("count=1, loading schedule");
+    }
+
+}
+// else go to sponsor.html or thankyou.html
+
+
 
 
 // create module layout
@@ -50,6 +55,8 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // make get url a function and export
 // add null condition
 // make qr
+// update count links
+// make new qr code stickers
 
 // pull schedule from supabase
 async function loadSchedule() {
@@ -266,6 +273,9 @@ function forwarding(data) {
         window.location.replace('./pages/thankYou.html?forwardingUndefined=true');
     }
 }
+
+// count user
+hitCounter(qr, count);
 
 // pull schedule from supabase
 loadSchedule()
