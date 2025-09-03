@@ -30,7 +30,15 @@ function hitCounter(qr, count) {
         try {
             const qrLower = qr ? qr.toLowerCase() : "";
             if (qrLinks[qrLower]) {
-                window.location.replace(qrLinks[qrLower]);
+
+                // adding a delay to allow time for the console log to be seen, testing only
+                console.log("forwarding to link for qr: " + qrLower);
+                setTimeout(() => {
+                        window.location.replace(qrLinks[qrLower]);
+                    }, 500);
+
+
+                // window.location.replace(qrLinks[qrLower]);
             } else {
                 console.log("reloading as count=1");
                 window.location.href = "./?count=1";
