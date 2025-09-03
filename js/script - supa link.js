@@ -1,16 +1,49 @@
+// get qr from url
+const urlParams = new URLSearchParams(window.location.search);
+const qr = urlParams.get('qr');
+// var qr = "blue"; // for testing only, remove later
+console.log("QR: " + qr);
+
+const count = urlParams.get('count');
+console.log("Count: " + count);
+
+const qrLinks = {
+    blue: "https://rebrand.ly/6e7eaa",
+    orange: "https://rebrand.ly/fba5d2",
+    green: "https://rebrand.ly/7f445a",
+    purple: "https://rebrand.ly/cbfacc",
+    yellow: "https://rebrand.ly/83eb95",
+    red: "https://rebrand.ly/7d9b7e"
+};
+
+// if qr=null, load all
+if (count === null) {
+    try {
+        const qrLower = qr ? qr.toLowerCase() : "";
+        if (qrLinks[qrLower]) {
+            window.location.replace(qrLinks[qrLower]);
+        } else {
+            console.log("reloading as count=1");
+            window.location.href = "./?count=1";
+        }
+    } catch (error) {
+        console.error("Error in forwarding function: ", error);
+        window.location.href = "./?count=1";
+    }
+    
+} else if (count === "1") {
+    console.log("count=1, loading schedule");
+}
+
+// else go to sponsor.html or thankyou.html
+
+
 const SUPABASE_URL = "https://hidtbyhdnandyamqgoib.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpZHRieWhkbmFuZHlhbXFnb2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNTY2OTgsImV4cCI6MjA3MTkzMjY5OH0.vp7NaOZD_Oi78uXDMx9_HzMY1TJaXKKjFwWU-vaT4ko";
 
 // ✅ Create client after library loads
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// get qr from url
-const urlParams = new URLSearchParams(window.location.search);
-const qr = urlParams.get('qr');
-// if qr=null, load all
-
-console.log("QR: " + qr);
-// else go to sponsor.html or thankyou.html
 
 // create module layout
     // when making modular, add to html <script type="module" src="./scripts/main.js"></script>
@@ -137,97 +170,102 @@ function qrFilter(data, qr) {
 // based on QR code, forward to link or show links as buttons
 function forwarding(data) {
     // link thank you directly
+    try {
 
-    console.log("Forwarding function called");
-    console.log(data[0]?.link);
 
-    const thankYou = './pages/thankYou.html'
+        console.log("Forwarding function called");
+        console.log(data[0]?.link);
 
-    
-    const lowerCaseLinkArray = data.map(event => ({
-        ...event,
-        link: event.link ? event.link.trim().toLowerCase() : ""
-    }));
-    console.log(lowerCaseLinkArray);
+        const thankYou = './pages/thankYou.html'
 
-    // forwarding conditions
-    if (data.length === 0) { // if the QR filter sent nothing, go to thank you page
-        window.location.replace(thankYou);
-    
-    // if thank you in link, go to thank you page with params
-    } else if (lowerCaseLinkArray.some(qrCodes => qrCodes.link.includes("thank you"))) { // if the QR filter found thank you, go to thank you page
-    console.log("Thank you found");
+        
+        const lowerCaseLinkArray = data.map(event => ({
+            ...event,
+            link: event.link ? event.link.trim().toLowerCase() : ""
+        }));
+        console.log(lowerCaseLinkArray);
 
-    const paramsObject = {
-        event_stop: data[0].event_stop_dt,
-        location: data[0].location
-    };
+        // forwarding conditions
+        if (data.length === 0) { // if the QR filter sent nothing, go to thank you page
+            window.location.replace(thankYou);
+        
+        // if thank you in link, go to thank you page with params
+        } else if (lowerCaseLinkArray.some(qrCodes => qrCodes.link.includes("thank you"))) { // if the QR filter found thank you, go to thank you page
+        console.log("Thank you found");
 
-    const queryString = new URLSearchParams(paramsObject).toString();
-    const redirectUrl = `${thankYou}?${queryString}`;
+        const paramsObject = {
+            event_stop: data[0].event_stop_dt,
+            location: data[0].location
+        };
 
-    console.log(redirectUrl);
-    window.location.replace(redirectUrl);
+        const queryString = new URLSearchParams(paramsObject).toString();
+        const redirectUrl = `${thankYou}?${queryString}`;
 
-    } else if (data.length === 1){     // if 1 match, forward to link
-        // check if link is null or empty, if so go to thank you page with params
-        if (data[0].link == null || data[0].link.trim() === "") {
-            const paramsObject = {
-                event_stop: data[0].event_stop_dt,
-                location: data[0].location
-            };
+        console.log(redirectUrl);
+        window.location.replace(redirectUrl);
 
-            const queryString = new URLSearchParams(paramsObject).toString();
-            const redirectUrl = `${thankYou}?${queryString}`;
+        } else if (data.length === 1){     // if 1 match, forward to link
+            // check if link is null or empty, if so go to thank you page with params
+            if (data[0].link == null || data[0].link.trim() === "") {
+                const paramsObject = {
+                    event_stop: data[0].event_stop_dt,
+                    location: data[0].location
+                };
 
-            console.log(redirectUrl);
-            window.location.replace(redirectUrl);
+                const queryString = new URLSearchParams(paramsObject).toString();
+                const redirectUrl = `${thankYou}?${queryString}`;
 
-        } else {    // if link exists, go to link
-            
-            // checks to see if link starts with http or https, if not add https:// to front
-            let link = data[0].link;
-            if (link && !/^https?:\/\//i.test(link)) {
-                link = 'https://' + link;
+                console.log(redirectUrl);
+                window.location.replace(redirectUrl);
+
+            } else {    // if link exists, go to link
+                
+                // checks to see if link starts with http or https, if not add https:// to front
+                let link = data[0].link;
+                if (link && !/^https?:\/\//i.test(link)) {
+                    link = 'https://' + link;
+                }
+                console.log('1 Link')
+                console.log(link)
+                console.log(data[0].event)
+                window.location.replace(link);
+
+                
             }
-            console.log('1 Link')
-            console.log(link)
-            console.log(data[0].event)
-            window.location.replace(link);
+        } else {    // if multiple, show buttons
+            console.log('Multiple Links found')
+            const buttonContainer = document.getElementById("buttonContainer");
 
-            
+            // create button for each event
+            data.forEach(event => {
+                const button = document.createElement("button")
+
+                button.addEventListener("click", () => {
+                    window.location.href = event.link;
+                });
+                button.textContent = event.event;
+                buttonContainer.appendChild(button)
+            })
+
+            const greetingContainer = document.getElementById("greetingContainer");
+
+            const greeting = document.createElement("h1")
+            greeting.innerHTML = "Welcome To Check Mates!";
+
+            const instructions = document.createElement("h2")
+            instructions.innerHTML = "Select your event below"
+
+            greetingContainer.appendChild(greeting)
+            greetingContainer.appendChild(instructions)
+
+            console.log(`${data.length} Links`)
+
         }
-    } else {    // if multiple, show buttons
-        console.log('Multiple Links found')
-        const buttonContainer = document.getElementById("buttonContainer");
-
-        // create button for each event
-        data.forEach(event => {
-            const button = document.createElement("button")
-
-            button.addEventListener("click", () => {
-                window.location.href = event.link;
-            });
-            button.textContent = event.event;
-            buttonContainer.appendChild(button)
-        })
-
-        const greetingContainer = document.getElementById("greetingContainer");
-
-        const greeting = document.createElement("h1")
-        greeting.innerHTML = "Welcome To Check Mates!";
-
-        const instructions = document.createElement("h2")
-        instructions.innerHTML = "Select your event below"
-
-        greetingContainer.appendChild(greeting)
-        greetingContainer.appendChild(instructions)
-
-        console.log(`${data.length} Links`)
-
+    } catch (error) {
+        console.error("Error in forwarding function:", error);
+        window.location.replace('./pages/thankYou.html?forwardingUndefined=true');
     }
 }
-
 
 // pull schedule from supabase
 loadSchedule()
