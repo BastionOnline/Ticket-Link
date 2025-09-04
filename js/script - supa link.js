@@ -138,8 +138,9 @@ function qrFilter(data, qr) {
         console.log(filterAll);
         return filterAll;
     
-    } else if (qr && cleanData.some(qrCodes => qrCodes.qr_code.includes(qr))) { // look for specific qr in qr_code column
-
+    // } else if (qr && cleanData.some(qrCodes => qrCodes.qr_code.includes(qr))) { // look for specific qr in qr_code column
+        // codition to check exact QR and NULL
+    } else if (qr && cleanData.some(qrCodes => (qrCodes.qr_code && qrCodes.qr_code.includes(qr)) || qrCodes.qr_code === null)) { 
         console.log("Specific QR found");
         var filterUser = [...cleanData];
         filterUser = filterUser.filter(qrCodes => qrCodes.qr_code.includes(qr));
