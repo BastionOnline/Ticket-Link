@@ -4,8 +4,8 @@ const qr = urlParams.get('qr');
 // var qr = "red"; // for testing only, remove later
 console.log("QR: " + qr);
 
-const count = urlParams.get('count');
-console.log("Count: " + count);
+// const count = urlParams.get('count');
+// console.log("Count: " + count);
 
 const SUPABASE_URL = "https://hidtbyhdnandyamqgoib.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpZHRieWhkbmFuZHlhbXFnb2liIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYzNTY2OTgsImV4cCI6MjA3MTkzMjY5OH0.vp7NaOZD_Oi78uXDMx9_HzMY1TJaXKKjFwWU-vaT4ko";
@@ -283,7 +283,7 @@ function forwarding(data) {
 }
 
 // count user
-hitCounter(qr, count);
+// hitCounter(qr, count);
 
 // pull schedule from supabase
 loadSchedule()
