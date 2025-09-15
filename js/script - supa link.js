@@ -37,8 +37,21 @@ function hitCounter(qr, count) {
                         window.location.replace(qrLinks[qrLower]);
                     }, 500);
 
-
+                // original
                 // window.location.replace(qrLinks[qrLower]);
+
+                // async await testing
+                // Define a delay helper
+                const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+                // Wrap your logic in an async function
+                (async () => {
+                    if (qrLinks[qrLower]) {
+                        console.log("Delaying redirect by 500ms...");
+                        await delay(500); // Wait half a second
+                        window.location.replace(qrLinks[qrLower]);
+                    }
+                })();
             } else {
                 console.log("reloading as count=1");
                 window.location.href = "./?count=1";
