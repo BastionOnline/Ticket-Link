@@ -1,6 +1,6 @@
 // get qr from url
 const urlParams = new URLSearchParams(window.location.search);
-const qr = urlParams.get('qr');
+const qr = urlParams.get('utm_source');
 // var qr = "red"; // for testing only, remove later
 console.log("QR: " + qr);
 
